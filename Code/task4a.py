@@ -1,4 +1,5 @@
 import os
+import pickle
 from datetime import datetime
 
 import PIL
@@ -21,6 +22,33 @@ MONGO_CLIENT = MongoClient("mongodb://adminUser:adminPassword@localhost:27017/mw
 DATABASE = MONGO_CLIENT['mwd_db']
 
 
+# for actual union
+def list_intersection(lists):
+    if not lists:
+        return []
+
+    intersection_set = set((item["label"] for item in lists[0]))
+
+    for l in lists[1:]:
+        intersection_set.intersection_update(item["label"] for item in l)
+
+    result = [{"label": label} for label in intersection_set]
+    return result
+
+
+# for finding neighbors
+def generate_one_bit_diff_numbers(number, n):
+    binary_representation = format(number, f'0{n}b')  # Convert the number to binary with n bits
+
+    result = []
+    for i in range(n):
+        # Flip the bit at position i
+        new_number = number ^ (1 << i)
+        result.append(new_number)
+
+    return result
+
+
 # Function to plot k similar images against input image for all 5 feature models
 def plot_result(feature_vector_similarity_sorted_pairs, t, input_image_id_or_path, layers, hashes):
     dataset = datasets.Caltech101(BASE_DIR)
@@ -41,7 +69,7 @@ def plot_result(feature_vector_similarity_sorted_pairs, t, input_image_id_or_pat
     axes[0, 0].axis('off')
 
     for i in range(1):
-        axes[i + 1, 0].set_title(f"{t} similar images using LSH with {layers} layer(s) and {hashes} hash(es)",x=1,
+        axes[i + 1, 0].set_title(f"{t} similar images using LSH with {layers} layer(s) and {hashes} hash(es)", x=1,
                                  loc='center', pad=10,
                                  verticalalignment='top')
         axes[i + 1, 0].axis('off')
@@ -156,6 +184,16 @@ class Layer:
         else:
             self.table[hashcode] = [entry]
 
+    def extended_query(self, vecs):
+        hashcode = hash_func(vecs, self.projections)
+        neighbours = generate_one_bit_diff_numbers(hashcode, self.hash_size)
+        neighbours.append(hashcode)
+        results = list()
+        for hashcode in neighbours:
+            if hashcode in self.table.keys():
+                results.extend(self.table[hashcode])
+        return results
+
     def query(self, vecs):
         hashcode = hash_func(vecs, self.projections)
         results = list()
@@ -180,7 +218,13 @@ class LSH:
     def query(self, vecs):
         results = list()
         for table in self.tables:
-            results.extend(table.query(vecs))
+            results.append(table.query(vecs))
+        return results
+
+    def extended_query(self, vecs):
+        results = list()
+        for table in self.tables:
+            results.append(table.extended_query(vecs))
         return results
 
     def describe(self):
@@ -188,46 +232,85 @@ class LSH:
             print(table.table)
 
 
+def get_index_details():
+    lsh_index_file_path = f'./LSH_INDICES/lsh_index_details.pkl'
+    with open(lsh_index_file_path, 'rb') as file:
+        lsh_index_details = pickle.load(file)
+        print(f"LSH Index loaded")
+    return lsh_index_details
+
+
+def get_pruned_result_set(result_set, l, t):
+    image_id_to_result_count_dict = {}
+    for result in result_set:
+        image_id = result["label"]
+        if image_id not in image_id_to_result_count_dict.keys():
+            image_id_to_result_count_dict[image_id] = 0
+        image_id_to_result_count_dict[image_id] += 1
+    sorted_image_id_frequency_list = sorted(image_id_to_result_count_dict.items(), key=lambda item: item[1],
+                                            reverse=True)
+    result_set = []
+    confidence = 0
+    if len(sorted_image_id_frequency_list) > 1:
+        i = 0
+        freq = 0
+        for i in range(t):
+            result_set.append({"label": sorted_image_id_frequency_list[i][0]})
+            freq = sorted_image_id_frequency_list[i][1]
+            confidence += freq
+        i += 1
+        while i < len(sorted_image_id_frequency_list) and sorted_image_id_frequency_list[i][1] == freq:
+            result_set.append({"label": sorted_image_id_frequency_list[i][0]})
+            i += 1
+            confidence += freq
+    confidence /= l
+    confidence /= t
+    return result_set, confidence
+
+
 class ApproximateNearestNeighborSearch:
 
-    def __init__(self, layers, hashes):
-        self.layers = layers
-        self.hashes = hashes
+    def __init__(self, layers=None, hashes=None):
         self.image_vector_dimension = 1000
-        self.lsh = LSH(self.image_vector_dimension, self.layers, self.hashes)
+        if layers is None and hashes is None:
+            lsh_index_details = get_index_details()
+            self.layers = lsh_index_details["layers"]
+            self.hashes = lsh_index_details["hashes"]
+            self.lsh = lsh_index_details["lsh_index"]
+        else:
+            self.layers = layers
+            self.hashes = hashes
+            self.lsh = LSH(self.image_vector_dimension, self.layers, self.hashes)
 
     def train(self):
         feature_set = get_dataset_feature_set()
         for feature in feature_set:
             self.lsh.add(feature["resnet_fc_1000"], feature["image_id"])
+        lsh_index = self.lsh
+        lsh_index_file_path = f'./LSH_INDICES/lsh_index_details.pkl'
+        # Ensure that the directory path exists, creating it if necessary
+        os.makedirs(os.path.dirname(lsh_index_file_path), exist_ok=True)
+        with open(lsh_index_file_path, 'wb') as file:
+            pickle.dump({"layers": self.layers, "hashes": self.hashes, "lsh_index": lsh_index}, file)
+            print(f"LSH Index saved to {lsh_index_file_path}")
 
-    def find_t_nearest_neighbor(self, input_image_id_or_path, t, approach=1):
+    def find_t_nearest_neighbor(self, input_image_id_or_path, t, l, approach=1):
         query_image_vector = get_input_image_vector(input_image_id_or_path)
         dataset = datasets.Caltech101(BASE_DIR)
         collection = DATABASE.feature_descriptors
         result_set = self.query(query_image_vector)
+        result_set = [item for sublist in result_set for item in sublist]
 
         # approach 1: calculate euclidian of t that have the highest occurrences in all tables(less # of comparisons)
         if approach == 1:
-            image_id_to_result_count_dict = {}
-            for result in result_set:
-                image_id = result["label"]
-                if image_id not in image_id_to_result_count_dict.keys():
-                    image_id_to_result_count_dict[image_id] = 0
-                image_id_to_result_count_dict[image_id] += 1
-            sorted_image_id_frequency_list = sorted(image_id_to_result_count_dict.items(), key=lambda item: item[1],
-                                                    reverse=True)
-            result_set = []
-            if len(sorted_image_id_frequency_list) > 1:
-                i = 0
-                freq = 0
-                for i in range(t):
-                    result_set.append({"label": sorted_image_id_frequency_list[i][0]})
-                    freq = sorted_image_id_frequency_list[i][1]
-                i += 1
-                while i < len(sorted_image_id_frequency_list) and sorted_image_id_frequency_list[i][1] == freq:
-                    result_set.append({"label": sorted_image_id_frequency_list[i][0]})
-                    i += 1
+            result_set, confidence = get_pruned_result_set(result_set, l, t)
+            print(f"Original Approach Confidence: {confidence}")
+            # neighbor bucket
+            if confidence < 1:
+                extended_result_set = self.extended_query(query_image_vector)
+                result_set = [item for sublist in extended_result_set for item in sublist]
+                result_set, confidence = get_pruned_result_set(result_set, l, t)
+                print(f"Extended Approach Confidence: {confidence}")
 
         # approach 2: calculate euclidian of l*h(compare result set as is)
         euclidian_distance_list = []
@@ -248,6 +331,9 @@ class ApproximateNearestNeighborSearch:
 
     def query(self, query_image_vector):
         return self.lsh.query(query_image_vector)
+
+    def extended_query(self, query_image_vector):
+        return self.lsh.extended_query(query_image_vector)
 
     def describe(self):
         self.lsh.describe()
@@ -286,16 +372,10 @@ def get_unique_images_count(euclidian_distance_list):
 def driver():
     # l = int(input("Please select numer of Layers, L\n"))
     # h = int(input("Please number of hashes per layer, h\n"))
-    # input_image_id_or_path = input("Please select an image id or image path\n")
-    # t = int(input("Please select t to find t similar images\n"))
     l = 6
     h = 7
-    t = 10
-    input_image_id_or_path = "3100"
     ann = ApproximateNearestNeighborSearch(l, h)
     ann.train()
-    ann.find_t_nearest_neighbor(input_image_id_or_path, t)
-    # ann.describe()
 
 
 if __name__ == "__main__":

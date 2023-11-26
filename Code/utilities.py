@@ -20,21 +20,7 @@ MONGO_CLIENT = MongoClient("mongodb://adminUser:adminPassword@localhost:27017/mw
 DATABASE = MONGO_CLIENT['mwd_db']
 
 
-# for actual union
-def list_intersection(lists):
-    if not lists:
-        return []
-
-    intersection_set = set((item["label"] for item in lists[0]))
-
-    for l in lists[1:]:
-        intersection_set.intersection_update(item["label"] for item in l)
-
-    result = [{"label": label} for label in intersection_set]
-    return result
-
-
-# for finding neighbors
+# Function for finding neighbors that differ by 1 bit
 def generate_one_bit_diff_numbers(number, n):
     binary_representation = format(number, f'0{n}b')  # Convert the number to binary with n bits
 
@@ -97,6 +83,7 @@ def plot_result(feature_vector_similarity_sorted_pairs, t, input_image_id_or_pat
     plt.show()
 
 
+# Function to get Dataset feature set
 def get_dataset_feature_set():
     dataset = datasets.Caltech101(BASE_DIR)
     collection = DATABASE.feature_descriptors
@@ -104,6 +91,7 @@ def get_dataset_feature_set():
     return image_superset_features
 
 
+# Function to convert boolean value to integer
 def bool_to_int(x):
     res = 0
     for val in x:
@@ -113,6 +101,7 @@ def bool_to_int(x):
     return res
 
 
+# Function to calculate hash value
 def hash_func(vecs, projections):
     bools = np.dot(vecs, projections.T) > 0
     return bool_to_int(bools)
@@ -166,7 +155,7 @@ def extract_resnet_fc_1000(image):
     return feature_output.numpy()
 
 
-
+# Function to extract Resnet 50 Fully Connected layer feature for input image
 
 def get_input_image_vector(input_image_id_or_path):
     collection = DATABASE.feature_descriptors
@@ -181,6 +170,7 @@ def get_input_image_vector(input_image_id_or_path):
     return input_image_features
 
 
+# Function to fetch image
 def get_image(input_image_id_or_path):
     dataset = datasets.Caltech101(BASE_DIR)
     if input_image_id_or_path.isnumeric():
@@ -192,8 +182,28 @@ def get_image(input_image_id_or_path):
     return input_img
 
 
+# Function to get unique image count
 def get_unique_images_count(euclidian_distance_list):
     unique_elements = set()
     for item in euclidian_distance_list:
         unique_elements.add(item[1])
     return len(unique_elements)
+
+
+# Function to perform post processing like reshaping etc on return value of query/extended_query
+def result_set_processing(query_image_vector, result_set):
+    collection = DATABASE.feature_descriptors
+    result_set = [item for sublist in result_set for item in sublist]
+
+    euclidian_distance_list = []
+    for result in result_set:
+        image_id = result["label"]
+        image_vector = collection.find_one({"image_id": image_id})["resnet_fc_1000"]
+        euclidian_distance = calculate_euclidian_distance(query_image_vector, image_vector)
+        euclidian_distance_list.append((image_id, euclidian_distance))
+    total_images_count = len(euclidian_distance_list)
+    unique_images_count = get_unique_images_count(euclidian_distance_list)
+    # unique t images
+    euclidian_distance_list = list(set(euclidian_distance_list))
+    euclidian_distance_list = sorted(euclidian_distance_list, key=lambda x: x[1])
+    return unique_images_count, total_images_count, euclidian_distance_list

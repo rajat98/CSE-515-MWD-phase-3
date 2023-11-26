@@ -1,14 +1,15 @@
 from LSH import ApproximateNearestNeighborSearch
 
 
+# driver for creating index
 def driver():
-    # l = int(input("Please select numer of Layers, L\n"))
-    # h = int(input("Please number of hashes per layer, h\n"))
-    l = 10
-    h = 10
+    # number of layers
+    l = int(input("Please select number of Layers, L\n"))
+    # number of hashes per layer
+    h = int(input("Please number of hashes per layer, h\n"))
     ann = ApproximateNearestNeighborSearch(l, h)
     ann.train()
-    ann.describe()
+    # ann.describe()
 
 
 if __name__ == "__main__":

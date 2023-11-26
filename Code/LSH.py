@@ -35,7 +35,7 @@ class Layer:
 
     def query(self, vecs):
         hashcode = hash_func(vecs, self.projections)
-        print(hashcode)
+        # print(hashcode)
         results = list()
         if hashcode in self.table.keys():
             results.extend(self.table[hashcode])

@@ -9,7 +9,7 @@ def driver():
     for id in [1, 881, 2501, 5123, 8675]:
         input_image_id_or_path = str(id)
         ann.find_t_nearest_neighbor(input_image_id_or_path, t)
-    ann.describe()
+    # ann.describe()
 
 
 if __name__ == "__main__":

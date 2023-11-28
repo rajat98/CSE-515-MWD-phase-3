@@ -1,7 +1,7 @@
 import os
 import re
 from datetime import datetime
-
+import csv
 import PIL
 import numpy as np
 import pandas as pd
@@ -146,8 +146,18 @@ def extract_resnet_fc_1000(image):
     layer = CNN_MODEL.fc
     feature_output = extract_feature_vector(image, layer)
     return feature_output.numpy()
+    
+# Writing the data to the CSV file
+def save_output_csv(data):
+    csv_file_path = '../Outputs/T4/task4.csv'
 
-
+    with open(csv_file_path, 'w', newline='') as csvfile:
+        csv_writer = csv.writer(csvfile)
+        
+        csv_writer.writerow(['Image ID', 'Euclidean Distance'])
+        
+        csv_writer.writerows(data)
+        
 class Layer:
 
     def __init__(self, hash_size, dim):
@@ -254,6 +264,7 @@ class ApproximateNearestNeighborSearch:
         plot_result(euclidian_distance_list[:t], t, input_image_id_or_path, self.layers, self.hashes)
         print(f"Numbers of unique images considered during the process: {unique_images_count}")
         print(f"Overall number of images considered during the process: {total_images_count}")
+        save_output_csv(euclidian_distance_list)
 
     def query(self, query_image_vector):
         return self.lsh.query(query_image_vector)

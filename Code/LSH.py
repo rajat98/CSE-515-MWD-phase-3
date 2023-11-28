@@ -5,7 +5,7 @@ from numpy.random import randn
 from torchvision import datasets
 
 from utilities import hash_func, generate_one_bit_diff_numbers, get_dataset_feature_set, get_input_image_vector, \
-    BASE_DIR, plot_result, result_set_processing
+    BASE_DIR, plot_result, result_set_processing, csv
 
 
 class Layer:
@@ -82,6 +82,16 @@ def get_index_details():
         print(f"LSH Index loaded")
     return lsh_index_details
 
+# Writing the data to the CSV file
+def save_output_csv(data):
+    csv_file_path = '../Outputs/T4/task4.csv'
+
+    with open(csv_file_path, 'w', newline='') as csvfile:
+        csv_writer = csv.writer(csvfile)
+        
+        csv_writer.writerow(['Image ID', 'Euclidean Distance'])
+        
+        csv_writer.writerows(data)
 
 # ApproximateNearestNeighborSearch Class to encapsulate training and nearest neighbor search
 class ApproximateNearestNeighborSearch:
@@ -111,6 +121,7 @@ class ApproximateNearestNeighborSearch:
             pickle.dump({"layers": self.layers, "hashes": self.hashes, "lsh_index": lsh_index}, file)
             print(f"LSH Index saved to {lsh_index_file_path}")
 
+
     # Searches t nearest neighbor to given image id or path
     def find_t_nearest_neighbor(self, input_image_id_or_path, t):
         query_image_vector = get_input_image_vector(input_image_id_or_path)
@@ -127,6 +138,7 @@ class ApproximateNearestNeighborSearch:
         plot_result(euclidian_distance_list[:t], t, input_image_id_or_path, self.layers, self.hashes)
         print(f"Numbers of unique images considered during the process: {unique_images_count}")
         print(f"Overall number of images considered during the process: {total_images_count}")
+        save_output_csv(euclidian_distance_list)
 
     # Normal query to search t nearest neighbor
     def query(self, query_image_vector):

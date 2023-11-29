@@ -24,6 +24,12 @@ def euclidean_dist(p1, p2):
     dist = np.sqrt(np.sum((p1 - p2) ** 2))
     return dist
 
+def cosine_similarity(p1, p2):
+    dot_product = np.dot(p1, p2)
+    norm_a = np.linalg.norm(p1)
+    norm_b = np.linalg.norm(p2)
+    similarity = dot_product / (norm_a * norm_b)
+    return similarity
 
 # min max normalization
 def min_max_normalize(data):
@@ -56,22 +62,20 @@ def DBSCAN(data):
     count = 0
     for i in range(int(len(data))):
         for j in range(i + 1, int(len(data))):
-            distance = np.linalg.norm(data[i] - data[j])
+            distance = euclidean_dist(data[i],data[j])
             total_dist += distance
             count += 1
 
     avg_dist = total_dist / count if count > 0 else 0
     # print(avg_dist)
 
-    eps = avg_dist * 0.9
-    if (len(data) < 25):
-        minPts = 1
-    elif (len(data) < 100):
-        minPts = 2
-    elif (len(data) < 300):
-        minPts = 3
-    else:
-        minPts = 5
+    eps = avg_dist * 0.89
+    
+    if(len(data) < 25): minPts = 1
+    elif(len(data) < 101): minPts = 2
+    elif(len(data) < 201): minPts = 3
+    elif(len(data) < 301): minPts = 4
+    else: minPts = 5
 
     # create labels for each point
     labels = [-1] * len(data)
@@ -158,11 +162,55 @@ def PCA(data, num_components):
 
     return pca_data
 
+# dissimilarity matrix creation
+def calc_diss_matrix(data):
+    #calculate pairwise Euclidean distances
 
+    # initialize empty matrix
+    n = data.shape[0] 
+    dissimilarity_matrix = np.zeros((n,n))
+
+    for i in range(n):
+        for j in range(i+1, n):
+            # calculate euclidean distance between data points
+            # update dissimilarity matrix
+            dissimilarity_matrix[i,j] = euclidean_dist(data[i], data[j])
+            dissimilarity_matrix[j, i] = dissimilarity_matrix[i, j]
+
+    return dissimilarity_matrix
+
+# multidimensional scaling (MDS)
+def MDS(data, num_components):
+    # calculate dissimilarity matrix
+    dissimilarity_matrix = calc_diss_matrix(data)
+
+    n = data.shape[0] # number of data points
+    H = np.eye(n) - np.ones((n,n)) / n # centering matrix
+
+    # double centering 
+    B = -0.5 * H @ dissimilarity_matrix**2 @ H 
+
+    # Eigenvalue decomposition
+    eigenvalues, eigenvectors = np.linalg.eigh(B)
+
+    # Sort eigenvectors and eigenvalues in descending order
+    idx = np.argsort(eigenvalues)[::-1]
+    eigenvalues = eigenvalues[idx]
+    eigenvectors = eigenvectors[:, idx]
+
+    # Select the top k eigenvectors and eigenvalues
+    k_eigenvalues = np.diag(np.sqrt(np.maximum(eigenvalues[:num_components], 0)))
+    k_eigenvectors = eigenvectors[:, :num_components]
+
+    # MDS result
+    mds_result = k_eigenvectors @ k_eigenvalues
+
+    return mds_result
+    
 # visualize the clusters as differently colored point clouds in a 2-dimensional MDS space
 def visualize_clouds(label, data, clusters, num_clusters):
-    # PCA dimensionality reduction
-    data_2D = PCA(data, 2)
+    # MDS dimensionality reduction
+    data_2D = MDS(data, 2)
 
     # plot different colored point clouds
     plt.figure(figsize=(10, 8))
@@ -181,7 +229,8 @@ def visualize_clouds(label, data, clusters, num_clusters):
     plt.title(f'Label {label} Clusters in 2D PCA Space')
     plt.legend()
 
-    folder_path = "t2_output\point_clusters"
+    folder_path = '../Outputs/t2_output/point_clusters'
+    
     # Check if the folder exists, if not, create it
     if not os.path.exists(folder_path):
         os.makedirs(folder_path)
@@ -195,7 +244,8 @@ def visualize_clouds(label, data, clusters, num_clusters):
 
 # visualize as groups of thumbnails
 def visualize_images(label, data, label_data, clusters, significant_clusters):
-    folder_path = "t2_output\image_clusters"
+    folder_path = '../Outputs/t2_output/image_clusters'
+    
     # Check if the folder exists, if not, create it
     if not os.path.exists(folder_path):
         os.makedirs(folder_path)
@@ -282,10 +332,7 @@ def calc_metrics(true_labels, predicted_labels):
 
         precision[label] = tp / (tp + fp) if tp + fp != 0 else 0
         recall[label] = tp / (tp + fn) if tp + fn != 0 else 0
-        f1_score[label] = 2 * precision[label] * recall[label] / (precision[label] + recall[label]) if precision[
-                                                                                                           label] + \
-                                                                                                       recall[
-                                                                                                           label] != 0 else 0
+        f1_score[label] = 2 * precision[label] * recall[label] / (precision[label] + recall[label]) if precision[label]+recall[label] != 0 else 0
 
     # accuracy
     accuracy = sum(1 for true, pred in zip(true_labels, predicted_labels) if true == pred) / len(true_labels)

@@ -138,7 +138,7 @@ class ApproximateNearestNeighborSearch:
         plot_result(euclidian_distance_list[:t], t, input_image_id_or_path, self.layers, self.hashes)
         print(f"Numbers of unique images considered during the process: {unique_images_count}")
         print(f"Overall number of images considered during the process: {total_images_count}")
-        save_output_csv(euclidian_distance_list)
+        save_output_csv(euclidian_distance_list[:t])
 
     # Normal query to search t nearest neighbor
     def query(self, query_image_vector):

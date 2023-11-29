@@ -131,7 +131,7 @@ def select_feature_model(option):
 
 # Step 1: Feature Extraction and Storage
 # reading the feature file and using the resnet fc model for extraction
-df = pd.read_csv('FD_Objects.csv')
+df = pd.read_csv('../FD_Objects.csv')
 
 feature_option = int(input("Please pick one of the below options\n"
                                "1. HOG\n"

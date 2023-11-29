@@ -39,10 +39,16 @@ Before using this code, ensure you have the following prerequisites installed:
 ## Task 1
 
 ### Description
+Task 1 evaluates the precision of predicted labels of odd images in the Caltech dataset based on the similarity score with the even numbered images in the Caltech dataset.
 
 ### Usage
+python3 task1.py
 
 ## Features
+  - The code provides the following features:
+  - Label specific latent semantic: the task computes latent semantics for Caltech101 images. The extracted semantics are specific to a label.
+  - Odd-Numbered Image Prediction: Predicts likely labels for the odd images based on the distances/similarities computed under label-specific latent semantics.
+  - Evaluation Metrics: Computes essential evaluation metrics such as per-label precision, recall, F1-score, and overall accuracy to assess prediction performance.
 
 ## Usage
 
@@ -66,11 +72,11 @@ python3 task3.py
 ## Features
 
 This code supports the extraction and analysis of the following image feature descriptors:
-    - Classifier Implementation: The program provides the implementation of multiple classifiers tailored for image classification tasks.
-    - Prediction for Odd-Numbered Images: Predicts the most likely labels for odd-numbered Caltec101 images using the trained classifiers.
-    - Feature Space Selection: Allows for the selection and utilization of specific feature spaces for image representation and subsequent classification.
-    - Evaluation Metrics: Computes essential evaluation metrics such as per-label precision, recall, F1-score, and overall accuracy to assess classifier performance.
-    - Command-Line Interface (CLI) Usage: The program features a user-friendly interface accessible through command-line arguments.
+  - Classifier Implementation: The program provides the implementation of multiple classifiers tailored for image classification tasks.
+  - Prediction for Odd-Numbered Images: Predicts the most likely labels for odd-numbered Caltec101 images using the trained classifiers.
+  - Feature Space Selection: Allows for the selection and utilization of specific feature spaces for image representation and subsequent classification.
+  - Evaluation Metrics: Computes essential evaluation metrics such as per-label precision, recall, F1-score, and overall accuracy to assess classifier performance.
+  - Command-Line Interface (CLI) Usage: The program features a user-friendly interface accessible through command-line arguments.
 
 ## Usage
 

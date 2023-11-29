@@ -356,7 +356,7 @@ df_odd = df[df['ImageID'] % 2 != 0]
 dataset = torchvision.datasets.Caltech101(BASE_DIR)
 
 # set up output folder
-folder_path = "t2_output"
+folder_path = "../Outputs/t2_output/image_clusters"
 # Check if the folder exists, if not, create it
 if not os.path.exists(folder_path):
     os.makedirs(folder_path)

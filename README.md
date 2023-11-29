@@ -142,8 +142,20 @@ Overall statistics on the number of images considered during the process are als
 
 ### Description
 
+The task described involves implementing two types of relevance feedback systems: an SVM (Support Vector Machine) based system and a probabilistic relevance feedback system. These systems are designed to enhance the image results by updating the order from user input feedback.
+
 ### Usage
 
+python3 task5.py
+
 ## Features
+
+The code for the task have the following features:
+-Data Retrieval: The code reads image data from a CSV file using pandas.
+-User Interaction: Allows the user to input tags for certain images, providing feedback on the relevance of those images.
+-SVM-based Relevance Feedback System: Trains a Support Vector Machine (SVM) using user-provided tags for images. The SVM model is trained to predict the relevance of images based on the Euclidean Distance feature.
+-Probabilistic Relevance Feedback System: Estimates the probability of relevance for each document using Logistic Regression. Combines the relevance probabilities, user tags, and Euclidean distance to calculate a score for each result. Ranks the results based on the calculated score.
+-Result Ranking: Ranks the results based on the SVM model's predictions or the probabilistic model's relevance scores.
+-Command-Line Interface (CLI) Usage: Provides a simple CLI for the user to choose between the SVM-based and probabilistic relevance feedback systems.
 
 ---

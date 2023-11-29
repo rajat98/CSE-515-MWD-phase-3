@@ -55,11 +55,19 @@ python3 task1.py
 ## Task 2
 
 ### Description
+The primary goal of this task is to compute the c most significant clusters associated with the even numbered Caltec images using the DBScan algorithm. The clusters are then used to predict the most likely labels for the odd numbered images. 
 
 ### Usage
+python3 task2.py
 
 ## Features
-
+This code supports analysis and prediction capabilities. 
+- DBScan Clustering: computation of the c most significant clusters associated with the even numbered Caltech101 images using DBScan for each unique label
+- Visualization using Dimensionality Reduction: visualization of clusters as differently colored point clouds in a 2D MDS space
+- Image Visualization - visualization of clusters as groups of image thumbnails
+- Label Prediction - prediction of the most likely labels for the odd numbered images using the c label specific clusters
+- Evaluation Metrics - calculates per-label precision, recall, and F1 as well as overall accuracy
+  
 ## Task 3
 
 ### Description

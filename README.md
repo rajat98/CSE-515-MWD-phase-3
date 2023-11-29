@@ -61,16 +61,16 @@ Task 3 encompasses the implementation of various classifiers for image classific
 
 ### Usage
 
-python3 task3_classifier.py
+python3 task3.py
 
 ## Features
 
 This code supports the extraction and analysis of the following image feature descriptors:
--Classifier Implementation: The program provides the implementation of multiple classifiers tailored for image classification tasks.
--Prediction for Odd-Numbered Images: Predicts the most likely labels for odd-numbered Caltec101 images using the trained classifiers.
--Feature Space Selection: Allows for the selection and utilization of specific feature spaces for image representation and subsequent classification.
--Evaluation Metrics: Computes essential evaluation metrics such as per-label precision, recall, F1-score, and overall accuracy to assess classifier performance.
--Command-Line Interface (CLI) Usage: The program features a user-friendly interface accessible through command-line arguments.
+    - Classifier Implementation: The program provides the implementation of multiple classifiers tailored for image classification tasks.
+    - Prediction for Odd-Numbered Images: Predicts the most likely labels for odd-numbered Caltec101 images using the trained classifiers.
+    - Feature Space Selection: Allows for the selection and utilization of specific feature spaces for image representation and subsequent classification.
+    - Evaluation Metrics: Computes essential evaluation metrics such as per-label precision, recall, F1-score, and overall accuracy to assess classifier performance.
+    - Command-Line Interface (CLI) Usage: The program features a user-friendly interface accessible through command-line arguments.
 
 ## Usage
 

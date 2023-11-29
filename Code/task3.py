@@ -16,7 +16,7 @@ from tqdm import tqdm
 def parse_string(string):
     values = re.findall(r'-?\d+\.\d+', string)
     np_array = np.array(values, dtype=float)
-    return torch.tensor(np_array, dtype=torch.float32)
+    return np_array
 
 
 class KNeighborsClassifier:

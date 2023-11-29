@@ -42,8 +42,9 @@ Before using this code, ensure you have the following prerequisites installed:
 Task 1 evaluates the precision of predicted labels of odd images in the Caltech dataset based on the similarity score with the even numbered images in the Caltech dataset.
 
 ### Usage
+```bash
 python3 task1.py
-
+```
 ## Features
   - The code provides the following features:
   - Label specific latent semantic: the task computes latent semantics for Caltech101 images. The extracted semantics are specific to a label.
@@ -58,8 +59,9 @@ python3 task1.py
 The primary goal of this task is to compute the c most significant clusters associated with the even numbered Caltec images using the DBScan algorithm. The clusters are then used to predict the most likely labels for the odd numbered images. 
 
 ### Usage
+```bash
 python3 task2.py
-
+````
 ## Features
 This code supports analysis and prediction capabilities. 
 - DBScan Clustering: computation of the c most significant clusters associated with the even numbered Caltech101 images using DBScan for each unique label

@@ -3,7 +3,7 @@
 
 # Project Title
 
-## CSE 515 Multimedia and Web Databases - Phase #3
+## CSE 515: Multimedia and Web Databases - Phase 3
 
 This project continues the exploration of multimedia and web databases using the Caltec101 dataset. It involves tasks related to clustering, indexing, and classification/relevance feedback.
 
@@ -77,13 +77,67 @@ This code supports the extraction and analysis of the following image feature de
 ## Task 4
 
 ### Description
+This task implements a Locality-Sensitive Hashing (LSH) based Approximate Nearest Neighbor Search system for image retrieval. The system is designed to create an LSH index and efficiently search for the t nearest neighbors in a large dataset.
+
+## Task 4a
 
 ### Usage
+To create the LSH index, run the following command in your terminal:
+
+```bash
+python3 task4a.py
+```
+You will be prompted to enter  parameters l(number of layers) & h(number of hashes per layer). The system will create a LSH index based on the aforementioned params and will persist it on the disk for future usages.
 
 ## Features
+1. **Customizable LSH Parameters:**
+Users can specify the number of layers (L) for the LSH index.
+Users can set the number of hashes per layer (h) to control the granularity of the hash buckets.
 
-## Usage
+2. **LSH Index Training:**
+The system automatically trains the LSH index using the specified parameters.
+The training is performed on the Caltech101 dataset, utilizing ResNet-50 features.
 
+3. **Index Saving and Loading:**
+The LSH index details, including layers, hashes, and the index itself, are saved to a file (lsh_index_details.pkl).
+The saved index can be loaded for later use, reducing the need for repeated training.
+
+4. **Output Visualization:**
+Users can choose to visualize the hash tables for debugging purposes.
+The system provides insights into the distribution of images across hash buckets.
+
+## Task 4b
+
+### Usage
+To search for the t nearest neighbors using the LSH index created in Task 4a, run the following command :
+
+```bash
+python3 task4b.py
+```
+You will be prompted to enter either an image id or image path and the parameter t. The system will then retrieve and display the t nearest neighbors using the LSH index.
+## Features
+1. **Interactive User Input:**
+Users are prompted to input an image id or image path for the query.
+Users specify the parameter t to determine the number of nearest neighbors to retrieve.
+
+2. **Query Execution:**
+The system uses the trained LSH index to efficiently search for the t nearest neighbors.
+Euclidean distances are computed to measure the similarity between the query image and the retrieved neighbors.
+
+3. **Extended Query for Insufficient Results:**
+If the number of unique images in the initial result set is less than t, an extended query is automatically performed.
+The extended query broadens the search space to ensure a sufficient number of results are obtained.
+
+4. **Result Visualization:**
+The system generates visualizations of the t nearest neighbors, including the input image and their Euclidean distances.
+Results are plotted and saved to an output directory for further analysis.
+
+5. **CSV Output:**
+Euclidean distances and image IDs of the t nearest neighbors are saved to a CSV file (task4.csv) for external use or analysis.
+
+6. **User Feedback:**
+The system provides information on the number of unique images considered during the process.
+Overall statistics on the number of images considered during the process are also displayed.
 ## Task 5
 
 ### Description

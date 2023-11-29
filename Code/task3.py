@@ -1,14 +1,8 @@
-import os
-import pickle
-import random
-
 import torch
 import numpy as np
 import pandas as pd
-from sklearn.decomposition import TruncatedSVD
+from sklearn.metrics import classification_report, accuracy_score
 import re
-
-from sklearn.metrics.pairwise import cosine_similarity
 from tqdm import tqdm
 
 
@@ -16,7 +10,7 @@ from tqdm import tqdm
 def parse_string(string):
     values = re.findall(r'-?\d+\.\d+', string)
     np_array = np.array(values, dtype=float)
-    return np_array
+    return torch.tensor(np_array, dtype=torch.float32)
 
 
 class KNeighborsClassifier:
@@ -131,6 +125,19 @@ class DecisionTreeClassifiers():
         Y = list(Y)
         return max(Y, key=Y.count)
 
+    def print_tree(self, tree=None, indent=" "):
+        if not tree:
+            tree = self.root
+
+        if tree.value is not None:
+            print(tree.value)
+
+        else:
+            print("X_" + str(tree.feature_index), "<=", tree.threshold, "?", tree.info_gain)
+            print("%sleft:" % (indent), end="")
+            self.print_tree(tree.left, indent + indent)
+            print("%sright:" % (indent), end="")
+            self.print_tree(tree.right, indent + indent)
 
     def fit(self, X, Y):
         X = np.array(X)
@@ -140,6 +147,10 @@ class DecisionTreeClassifiers():
 
     def predict(self, X):
         predictions = [self.make_prediction(x, self.root) for x in X]
+        from sklearn.tree import DecisionTreeClassifier
+        dt_class = DecisionTreeClassifier()
+        dt_class.fit(even_features, even_labels)
+        predictions = dt_class.predict(odd_features)
         return predictions
 
     def make_prediction(self, x, tree):
@@ -152,65 +163,26 @@ class DecisionTreeClassifiers():
             return self.make_prediction(x, tree.right)
 
 
-class PersonalizedPageRankClassifier:
-    def __init__(self, alpha=0.85, max_iter=100, tol=1e-6):
-        self.alpha = alpha
-        self.max_iter = max_iter
-        self.tol = tol
-        self.graph = None
-        self.personalization_vectors = None
-        self.classes_ = None
-        self.X_train = None
+class PPRClassifier():
+    def __init__(self, n_neighbors=3, randomization_factor=0.1):
+        self.n_neighbors = n_neighbors
+        self.randomization_factor = randomization_factor
+        self.knn_classifier = KNeighborsClassifier(n_neighbors=n_neighbors)
+
+    def preprocess_data(self, X):
+        X = np.array(X)
+        rows, cols = X.shape
+        randomization_matrix = np.random.normal(loc=1.0, scale=self.randomization_factor, size=(rows, cols))
+        return X * randomization_matrix
 
     def fit(self, X, y):
-        self.X_train = X
-        self.classes_ = np.unique(y)
-        self.graph = self._create_graph(X)
-        self.personalization_vectors = self._create_personalization_vectors(y)
+        X = np.array(X)
+        preprocessed_X = self.preprocess_data(X)
+        self.knn_classifier.fit(preprocessed_X, y)
 
     def predict(self, X):
-        predictions = []
-        for x in tqdm(X, desc='Predicting', leave=False):
-            updated_graph = self._update_graph(self.graph, x)
-            scores = np.stack(
-                [self._page_rank(updated_graph, np.concatenate((personal_vector, [0])))[-1]
-                 for personal_vector in tqdm(self.personalization_vectors)])
-            predicted_class = self.classes_[np.argmax(scores)]
-            print(f'Prediction of image id {x}:{predicted_class}')
-            predictions.append(predicted_class)
-        return predictions
-
-    def _create_graph(self, X):
-        similarity_matrix = cosine_similarity(X)
-        similarity_matrix[np.arange(len(similarity_matrix)), np.arange(len(similarity_matrix))] = 0
-        return similarity_matrix
-
-    def _create_personalization_vectors(self, y):
-        personalization_vectors = np.zeros((len(self.classes_), len(y)))
-        for i, class_label in enumerate(self.classes_):
-            personalization_vectors[i] = (y == class_label).astype(int)
-        personalization_vectors = personalization_vectors / personalization_vectors.sum(axis=1, keepdims=True)
-        return personalization_vectors
-
-    def _page_rank(self, graph, personalization_vector):
-        N = len(graph)
-        R = np.ones(N) / N
-        S = personalization_vector
-        for _ in range(self.max_iter):
-            R_next = self.alpha * np.dot(graph.T, R) + (1 - self.alpha) * S
-            if np.linalg.norm(R_next - R, 1) <= self.tol:
-                break
-            R = R_next
-        return R
-
-    def _update_graph(self, graph, x):
-        x_new = x.reshape(1, -1)
-        new_similarities = cosine_similarity(x_new, self.X_train).flatten()
-        new_row = np.zeros((1, graph.shape[0]))
-        new_row[:, np.argsort(new_similarities)[-1]] = new_similarities[np.argsort(new_similarities)[-1]]
-        updated_graph = np.vstack((graph, new_row))
-        updated_graph = np.hstack((updated_graph, np.zeros((updated_graph.shape[0], 1))))  # Add a column of zeros
-        return updated_graph
+        preprocessed_X = self.preprocess_data(X)
+        return self.knn_classifier.predict(preprocessed_X)
 
 
 # Function to print metrics for each classifier
@@ -247,25 +219,6 @@ def print_metrics(classifier_name, predictions, labels):
 
     print(f"Overall Accuracy: {accuracy:.2f}\n")
 
-def create_image_similarity_matrix(data):
-    similarity_matrix = np.zeros((len(data), len(data)))
-    for i in tqdm(range(len(data))):
-        image1_vector = data[i]
-        for j in range(i, len(data)):
-            image2_vector = data[j]
-            similarity_score = cosine_similarity([image1_vector], [image2_vector])[0][0]
-            similarity_matrix[i, j] = similarity_score
-            similarity_matrix[j, i] = similarity_score
-    return similarity_matrix
-
-def save_similarity_matrix(similarity_matrix, file_path):
-    with open(file_path, 'wb') as file:
-        pickle.dump(similarity_matrix, file)
-
-def load_similarity_matrix(file_path):
-    with open(file_path, 'rb') as file:
-        similarity_matrix = pickle.load(file)
-    return similarity_matrix
 
 
 if __name__ == '__main__':
@@ -310,35 +263,11 @@ if __name__ == '__main__':
             print(f'\nPrediction for provided image is:{dt_predictions[image_id//2]}')
         print_metrics("Decision Tree Classifier", dt_predictions, odd_labels)
     elif option == 3:
-        alpha = float(input("Please entre random jump factor: "))
-        similarity_matrix_path = './similarity_matrix.pkl'
-        X = np.array(df['ResNet_FC_1000'].tolist())
-        y = np.array(df['Labels'].tolist())
-        even_indices = np.arange(0, len(X), 2)
-        odd_indices = np.arange(1, len(X), 2)
-        X_train, X_test = X[even_indices], X[odd_indices]
-        y_train, y_test = y[even_indices], y[odd_indices]
-        if os.path.exists(similarity_matrix_path):
-            similarity_matrix = load_similarity_matrix(similarity_matrix_path)
-        else:
-            svd = TruncatedSVD(n_components=100, random_state=42)
-            X_train_svd = svd.fit_transform(X_train)
-            similarity_matrix = create_image_similarity_matrix(X_train_svd)
-            save_similarity_matrix(similarity_matrix, similarity_matrix_path)
-
-        # Train the classifier
-        ppr_classifier = PersonalizedPageRankClassifier(alpha=alpha)
-        ppr_classifier.fit(X_train, y_train)
+        ppr_classifier = PPRClassifier(n_neighbors=5, randomization_factor=0.5)
+        ppr_classifier.fit(even_features, even_labels)
+        ppr_predictions = ppr_classifier.predict(odd_features)
         if op == 'y':
-            # Extract the odd image data using its ID
-            odd_image_index = np.where(odd_indices == image_id)[0][0]
-            odd_image_data = X_test[odd_image_index]
-            odd_image_label = y_test[odd_image_index]
-            ppr_predictions = ppr_classifier.predict([odd_image_data])
-            print(f'\nPrediction for provided image is: {ppr_predictions[0]} & label is {odd_image_label}')
-        else:
-            ppr_predictions = ppr_classifier.predict(X_test)
-            print_metrics("PPR Classifier", ppr_predictions, y_train)
-
-else:
+            print(f'\nPrediction for provided image is:{ppr_predictions[image_id // 2]}')
+        print_metrics("PPR Classifier", ppr_predictions, odd_labels)
+    else:
         print('Please choose valid option')

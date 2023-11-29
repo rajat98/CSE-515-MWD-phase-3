@@ -1,0 +1,205 @@
+Per-label Metrics:
+
+Label: 0, Precision: 0.36660929432013767, Recall: 1.0, F1-Score: 0.5365239294710328
+
+Label: 1, Precision: 1.0, Recall: 1.0, F1-Score: 1.0
+
+Label: 2, Precision: 0.4444444444444444, Recall: 1.0, F1-Score: 0.6153846153846153
+
+Label: 3, Precision: 1.0, Recall: 1.0, F1-Score: 1.0
+
+Label: 4, Precision: 0.5, Recall: 1.0, F1-Score: 0.6666666666666666
+
+Label: 5, Precision: 1.0, Recall: 1.0, F1-Score: 1.0
+
+Label: 6, Precision: 0.29411764705882354, Recall: 1.0, F1-Score: 0.45454545454545453
+
+Label: 7, Precision: 1.0, Recall: 1.0, F1-Score: 1.0
+
+Label: 8, Precision: 0, Recall: 0.0, F1-Score: 0
+
+Label: 9, Precision: 0, Recall: 0.0, F1-Score: 0
+
+Label: 10, Precision: 0, Recall: 0.0, F1-Score: 0
+
+Label: 11, Precision: 1.0, Recall: 1.0, F1-Score: 1.0
+
+Label: 12, Precision: 0.3263157894736842, Recall: 1.0, F1-Score: 0.49206349206349204
+
+Label: 13, Precision: 1.0, Recall: 1.0, F1-Score: 1.0
+
+Label: 14, Precision: 0.375, Recall: 1.0, F1-Score: 0.5454545454545454
+
+Label: 15, Precision: 1.0, Recall: 1.0, F1-Score: 1.0
+
+Label: 16, Precision: 0.0948509485094851, Recall: 1.0, F1-Score: 0.17326732673267328
+
+Label: 17, Precision: 1.0, Recall: 1.0, F1-Score: 1.0
+
+Label: 18, Precision: 0.5, Recall: 1.0, F1-Score: 0.6666666666666666
+
+Label: 19, Precision: 1.0, Recall: 1.0, F1-Score: 1.0
+
+Label: 20, Precision: 0.48, Recall: 1.0, F1-Score: 0.6486486486486487
+
+Label: 21, Precision: 1.0, Recall: 1.0, F1-Score: 1.0
+
+Label: 22, Precision: 0.22077922077922077, Recall: 1.0, F1-Score: 0.3617021276595745
+
+Label: 23, Precision: 1.0, Recall: 1.0, F1-Score: 1.0
+
+Label: 24, Precision: 0.5, Recall: 1.0, F1-Score: 0.6666666666666666
+
+Label: 25, Precision: 1.0, Recall: 1.0, F1-Score: 1.0
+
+Label: 26, Precision: 0.1978021978021978, Recall: 1.0, F1-Score: 0.3302752293577982
+
+Label: 27, Precision: 1.0, Recall: 1.0, F1-Score: 1.0
+
+Label: 28, Precision: 0.24074074074074073, Recall: 1.0, F1-Score: 0.3880597014925373
+
+Label: 29, Precision: 1.0, Recall: 1.0, F1-Score: 1.0
+
+Label: 30, Precision: 0.47368421052631576, Recall: 1.0, F1-Score: 0.6428571428571429
+
+Label: 31, Precision: 1.0, Recall: 1.0, F1-Score: 1.0
+
+Label: 32, Precision: 0.5, Recall: 1.0, F1-Score: 0.6666666666666666
+
+Label: 33, Precision: 1.0, Recall: 1.0, F1-Score: 1.0
+
+Label: 34, Precision: 0.19469026548672566, Recall: 1.0, F1-Score: 0.3259259259259259
+
+Label: 35, Precision: 1.0, Recall: 1.0, F1-Score: 1.0
+
+Label: 36, Precision: 0.475, Recall: 1.0, F1-Score: 0.6440677966101694
+
+Label: 37, Precision: 0, Recall: 0.0, F1-Score: 0
+
+Label: 38, Precision: 0.5, Recall: 1.0, F1-Score: 0.6666666666666666
+
+Label: 39, Precision: 1.0, Recall: 1.0, F1-Score: 1.0
+
+Label: 40, Precision: 0.23529411764705882, Recall: 1.0, F1-Score: 0.38095238095238093
+
+Label: 41, Precision: 1.0, Recall: 1.0, F1-Score: 1.0
+
+Label: 42, Precision: 0, Recall: 0.0, F1-Score: 0
+
+Label: 43, Precision: 1.0, Recall: 1.0, F1-Score: 1.0
+
+Label: 44, Precision: 0, Recall: 0.0, F1-Score: 0
+
+Label: 45, Precision: 1.0, Recall: 1.0, F1-Score: 1.0
+
+Label: 46, Precision: 0.5, Recall: 1.0, F1-Score: 0.6666666666666666
+
+Label: 47, Precision: 1.0, Recall: 1.0, F1-Score: 1.0
+
+Label: 48, Precision: 0.4838709677419355, Recall: 1.0, F1-Score: 0.6521739130434783
+
+Label: 49, Precision: 0, Recall: 0.0, F1-Score: 0
+
+Label: 50, Precision: 0.3411764705882353, Recall: 1.0, F1-Score: 0.5087719298245613
+
+Label: 51, Precision: 1.0, Recall: 1.0, F1-Score: 1.0
+
+Label: 52, Precision: 0.5, Recall: 1.0, F1-Score: 0.6666666666666666
+
+Label: 53, Precision: 1.0, Recall: 1.0, F1-Score: 1.0
+
+Label: 54, Precision: 0.5, Recall: 1.0, F1-Score: 0.6666666666666666
+
+Label: 55, Precision: 1.0, Recall: 1.0, F1-Score: 1.0
+
+Label: 56, Precision: 0.475, Recall: 1.0, F1-Score: 0.6440677966101694
+
+Label: 57, Precision: 1.0, Recall: 1.0, F1-Score: 1.0
+
+Label: 58, Precision: 0.3870967741935484, Recall: 1.0, F1-Score: 0.5581395348837209
+
+Label: 59, Precision: 0, Recall: 0.0, F1-Score: 0
+
+Label: 60, Precision: 0.4107142857142857, Recall: 1.0, F1-Score: 0.5822784810126582
+
+Label: 61, Precision: 1.0, Recall: 1.0, F1-Score: 1.0
+
+Label: 62, Precision: 0, Recall: 0.0, F1-Score: 0
+
+Label: 63, Precision: 1.0, Recall: 1.0, F1-Score: 1.0
+
+Label: 64, Precision: 0.5, Recall: 1.0, F1-Score: 0.6666666666666666
+
+Label: 65, Precision: 1.0, Recall: 1.0, F1-Score: 1.0
+
+Label: 66, Precision: 0.5, Recall: 1.0, F1-Score: 0.6666666666666666
+
+Label: 67, Precision: 1.0, Recall: 1.0, F1-Score: 1.0
+
+Label: 68, Precision: 0, Recall: 0.0, F1-Score: 0
+
+Label: 69, Precision: 1.0, Recall: 1.0, F1-Score: 1.0
+
+Label: 70, Precision: 0.5, Recall: 1.0, F1-Score: 0.6666666666666666
+
+Label: 71, Precision: 1.0, Recall: 1.0, F1-Score: 1.0
+
+Label: 72, Precision: 0.358974358974359, Recall: 1.0, F1-Score: 0.5283018867924528
+
+Label: 73, Precision: 0, Recall: 0.0, F1-Score: 0
+
+Label: 74, Precision: 0.24324324324324326, Recall: 1.0, F1-Score: 0.391304347826087
+
+Label: 75, Precision: 1.0, Recall: 1.0, F1-Score: 1.0
+
+Label: 76, Precision: 0.5, Recall: 1.0, F1-Score: 0.6666666666666666
+
+Label: 77, Precision: 1.0, Recall: 1.0, F1-Score: 1.0
+
+Label: 78, Precision: 0.5, Recall: 1.0, F1-Score: 0.6666666666666666
+
+Label: 79, Precision: 0, Recall: 0.0, F1-Score: 0
+
+Label: 80, Precision: 0.45454545454545453, Recall: 1.0, F1-Score: 0.625
+
+Label: 81, Precision: 1.0, Recall: 1.0, F1-Score: 1.0
+
+Label: 82, Precision: 0.2835820895522388, Recall: 1.0, F1-Score: 0.4418604651162791
+
+Label: 83, Precision: 1.0, Recall: 1.0, F1-Score: 1.0
+
+Label: 84, Precision: 0.5, Recall: 1.0, F1-Score: 0.6666666666666666
+
+Label: 85, Precision: 1.0, Recall: 1.0, F1-Score: 1.0
+
+Label: 86, Precision: 0.4864864864864865, Recall: 1.0, F1-Score: 0.6545454545454547
+
+Label: 87, Precision: 1.0, Recall: 1.0, F1-Score: 1.0
+
+Label: 88, Precision: 0.4358974358974359, Recall: 1.0, F1-Score: 0.6071428571428571
+
+Label: 89, Precision: 0, Recall: 0.0, F1-Score: 0
+
+Label: 90, Precision: 0.49122807017543857, Recall: 1.0, F1-Score: 0.6588235294117647
+
+Label: 91, Precision: 1.0, Recall: 1.0, F1-Score: 1.0
+
+Label: 92, Precision: 0.4520547945205479, Recall: 1.0, F1-Score: 0.6226415094339622
+
+Label: 93, Precision: 1.0, Recall: 1.0, F1-Score: 1.0
+
+Label: 94, Precision: 0.33647798742138363, Recall: 1.0, F1-Score: 0.5035294117647059
+
+Label: 95, Precision: 0, Recall: 0.0, F1-Score: 0
+
+Label: 96, Precision: 0.5, Recall: 1.0, F1-Score: 0.6666666666666666
+
+Label: 97, Precision: 0, Recall: 0.0, F1-Score: 0
+
+Label: 98, Precision: 0, Recall: 0.0, F1-Score: 0
+
+Label: 99, Precision: 1.0, Recall: 1.0, F1-Score: 1.0
+
+Label: 100, Precision: 0.41379310344827586, Recall: 1.0, F1-Score: 0.5853658536585366
+
+Overall Accuracy: 0.6065006915629322

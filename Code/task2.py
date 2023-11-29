@@ -224,8 +224,8 @@ def visualize_clouds(label, data, clusters, num_clusters):
         cluster_indices = np.where(clusters == cluster)
         plt.scatter(data_2D[cluster_indices, 0], data_2D[cluster_indices, 1], label=f'Cluster {cluster}')
 
-    plt.xlabel('Principal Component 1')
-    plt.ylabel('Principal Component 2')
+    plt.xlabel('Dimension 1')
+    plt.ylabel('Dimension 2')
     plt.title(f'Label {label} Clusters in 2D PCA Space')
     plt.legend()
 

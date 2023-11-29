@@ -3,7 +3,7 @@
 
 # Project Title
 
-## CSE 515: Multimedia and Web Databases - Phase 3
+## CSE 515 Multimedia and Web Databases - Phase #3
 
 This project continues the exploration of multimedia and web databases using the Caltec101 dataset. It involves tasks related to clustering, indexing, and classification/relevance feedback.
 
@@ -66,9 +66,9 @@ python3 task1.py
 Task 3 encompasses the implementation of various classifiers for image classification using the Caltec101 dataset. This task involves the creation and utilization of m-NN (m-Nearest Neighbors), decision tree, and PPR (Personalized PageRank) classifiers to predict labels for odd-numbered images.
 
 ### Usage
-
+```bash
 python3 task3.py
-
+````
 ## Features
 
 This code supports the extraction and analysis of the following image feature descriptors:
@@ -144,6 +144,7 @@ Euclidean distances and image IDs of the t nearest neighbors are saved to a CSV 
 6. **User Feedback:**
 The system provides information on the number of unique images considered during the process.
 Overall statistics on the number of images considered during the process are also displayed.
+
 ## Task 5
 
 ### Description
@@ -151,9 +152,9 @@ Overall statistics on the number of images considered during the process are als
 The task described involves implementing two types of relevance feedback systems: an SVM (Support Vector Machine) based system and a probabilistic relevance feedback system. These systems are designed to enhance the image results by updating the order from user input feedback.
 
 ### Usage
-
+```bash
 python3 task5.py
-
+```
 ## Features
 
 The code for the task have the following features:
